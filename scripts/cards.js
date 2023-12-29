@@ -1,26 +1,32 @@
 const initialCards = [
     {
-      name: "Архыз",
-      link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
+      name: "Сибирь",
+      link: "https://images.unsplash.com/photo-1621079125910-08e2593fbe3d?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      alt: "машина на фоне заснеженного города",
     },
     {
       name: "Челябинская область",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
+      alt: "не замерзшее озеро на фоне зимнего леса"
     },
     {
       name: "Иваново",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
+      alt:  "вид домов сверху",
     },
     {
-      name: "Камчатка",
-      link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
+      name: "Эсто-Садок",
+      link: "https://images.unsplash.com/photo-1693513337142-e8611736e517?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      alt:  "город в горах, идущий в далеке человек",
     },
     {
       name: "Холмогорский район",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
+      alt:  "вид сверху: железная дорога ведущая через лес",
     },
     {
-      name: "Байкал",
-      link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
+      name: "Карелия",
+      link: "https://images.unsplash.com/photo-1652009232683-82a94b9c34ec?q=80&w=1744&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      alt:  "мотоцикл стоит на грунтовой дороге на фоне леса"
     }
 ];
