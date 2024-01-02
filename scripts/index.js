@@ -10,8 +10,6 @@
 
 const cardsSection = document.querySelector('.places__list');
 const template = document.querySelector('#card-template').content;
-const deleteButton = template.querySelector('.card__delete-button');
-
 
 
 function createCard(element) {
