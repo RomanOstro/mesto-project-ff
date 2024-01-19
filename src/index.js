@@ -8,6 +8,8 @@
 
 // @todo: Вывести карточки на страницу
 
+import './index.css';
+
 const cardsSection = document.querySelector('.places__list');
 const template = document.querySelector('#card-template').content;
 
