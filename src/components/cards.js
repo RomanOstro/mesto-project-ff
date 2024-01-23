@@ -1,3 +1,5 @@
+export{newCard}
+
 const initialCards = [
     {
       name: "Сибирь",
@@ -30,3 +32,29 @@ const initialCards = [
       alt:  "мотоцикл стоит на грунтовой дороге на фоне леса"
     }
 ];
+// Генерация карточки
+
+const newCard = () => {
+const cardsSection = document.querySelector('.places__list');
+const template = document.querySelector('#card-template').content;
+
+  function createCard(element) {
+    const cardElement = template.cloneNode(true);
+  
+    cardElement.querySelector('.card__title').textContent = element.name;
+    const cardImage = cardElement.querySelector('.card__image');
+    cardImage.src = element.link;
+    cardImage.alt = element.alt;
+    
+    const deleteButton = cardElement.querySelector('.card__delete-button');
+  
+    deleteButton.addEventListener('click', deleteCard);
+  
+    return cardElement;
+  }
+  
+  const deleteCard = (evt) => evt.target.closest('.card').remove();
+  
+  initialCards.forEach(element => cardsSection.append(createCard(element)));
+}
+
