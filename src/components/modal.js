@@ -1,5 +1,5 @@
 
-export {openModal, handlerClickClose}
+export {openModal, handlerClickClose, closeModal}
 
 // Обработчик закрытия попапа по кнопке Esc
   const keyPressEsc = (e) => {
@@ -13,6 +13,7 @@ export {openModal, handlerClickClose}
 const openModal = (popup) => {
   popup.classList.add('popup_is-opened');
   document.addEventListener('keydown', keyPressEsc)
+  
 } 
 
 // Функция снятия класса попапа
@@ -28,6 +29,20 @@ const handlerClickClose = (e) => {
     closeModal(activPopup)
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
