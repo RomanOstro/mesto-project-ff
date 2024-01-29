@@ -1,4 +1,5 @@
 export{newCard}
+import {closeModal} from './modal'
 
 const initialCards = [
     {
@@ -34,10 +35,20 @@ const initialCards = [
 ];
 // Генерация карточки
 
-const newCard = () => {
 const cardsSection = document.querySelector('.places__list');
 const template = document.querySelector('#card-template').content;
 
+
+const newCard = () => {
+
+  // Обработчик лайка
+  const likeToggle = (e) => {
+    if(e.target.classList.contains('card__like-button')) {
+      e.target.classList.toggle('card__like-button_is-active');
+    }
+  }
+
+  // Создание карточек из объекта initialCards
   function createCard(element) {
     const cardElement = template.cloneNode(true);
   
@@ -46,8 +57,10 @@ const template = document.querySelector('#card-template').content;
     cardImage.src = element.link;
     cardImage.alt = element.alt;
     
+    const likeButton = cardElement.querySelector('.card__like-button')
+    likeButton.addEventListener('click', likeToggle)
+
     const deleteButton = cardElement.querySelector('.card__delete-button');
-  
     deleteButton.addEventListener('click', deleteCard);
   
     return cardElement;
@@ -56,5 +69,46 @@ const template = document.querySelector('#card-template').content;
   const deleteCard = (evt) => evt.target.closest('.card').remove();
   
   initialCards.forEach(element => cardsSection.append(createCard(element)));
+
+  
+
+  //Создание новой карточки(через попап)
+const newCardPopupAdd = document.querySelector('.popup_type_new-card');
+const formNewPlace = newCardPopupAdd.querySelector('.popup__form');
+const cardNameInput = formNewPlace.querySelector('.popup__input_type_card-name'); 
+const cardUrlInput = formNewPlace.querySelector('.popup__input_type_url');
+
+// функция создания
+const createNewCard = (cardName, cardUrl, deleteCard, likeToggle) => {
+const template = document.querySelector('#card-template').content
+const newCard = template.cloneNode(true);
+newCard.querySelector('.card__title').textContent = cardName.value;
+newCard.querySelector('.card__image').src = cardUrl.value 
+
+const likeButton = newCard.querySelector('.card__like-button')
+likeButton.addEventListener('click', likeToggle );
+
+const deleteButton = newCard.querySelector('.card__delete-button');
+  deleteButton.addEventListener('click', deleteCard);
+return newCard;
+
 }
+
+// Обработчик добавления новой карточки
+const addNewCard = (e) => {
+  e.preventDefault();
+const newCard = createNewCard(cardNameInput, cardUrlInput, deleteCard, likeToggle)
+cardsSection.prepend(newCard);
+closeModal(newCardPopupAdd)
+formNewPlace.reset();
+
+}
+
+//Сабмит добавления карточки
+formNewPlace.addEventListener('submit', addNewCard )
+
+
+
+}
+
 

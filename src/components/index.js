@@ -4,6 +4,8 @@ import '../index.css';
 import {newCard} from './cards.js'
 import { openModal, handlerClickClose, closeModal} from './modal.js'
 
+
+
 newCard();
 
 
@@ -53,6 +55,7 @@ const newCardPopupAdd = document.querySelector('.popup_type_new-card');  //по�
 const profileAddButton = document.querySelector('.profile__add-button'); //кнопка добавления нов.кар.
 
 
+
 profileAddButton.addEventListener('click', () => {
   openModal(newCardPopupAdd)
 })
@@ -61,9 +64,7 @@ newCardPopupAdd.addEventListener('click', handlerClickClose )
 
 
 
-const addNewCard = () => {
 
-}
 
 
 
