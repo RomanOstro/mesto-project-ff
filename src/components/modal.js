@@ -19,6 +19,7 @@ const openModal = (popup) => {
 // Функция снятия класса попапа
 const closeModal = (popup) => { 
   popup.classList.remove('popup_is-opened');
+
   document.removeEventListener('keydown', keyPressEsc);
 }
 
