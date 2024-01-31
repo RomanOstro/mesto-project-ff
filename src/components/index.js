@@ -1,41 +1,26 @@
 import "../index.css";
-import {
-  createCard,
-  deleteCard,
-  initialCards,
-  likeToggle,
-} from "./cards.js";
+import {initialCards} from "./cards.js";
 import { openModal, handlerClickClose, closeModal } from "./modal.js";
+import {createCard, deleteCard, likeToggle} from "./card.js"
 
-const cardsSection = document.querySelector('.places__list');
 
-// Попап Image
+  // Объявление переменных
+// Секция с карточками
+const cardsSection = document.querySelector(".places__list");
+
+//Все попапы
+const allPopups = document.querySelectorAll(".popup");
+
+// Отображаемые на сайте данные профиля
+const profileName = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+
+// Элементы попапа вызываемого кликом на картинку
 const imagePopup = document.querySelector(".popup_type_image");
-const buttonClosePopupImg = imagePopup.querySelector(".popup__close");
-// Обработчик открытия попапа
-const handlerPopupImage = (e) => {
-  const popupImage = imagePopup.querySelector(".popup__image"); // элемент img попапа
-  const popupCaption = imagePopup.querySelector(".popup__caption"); // элемент подписи попапа
- 
-  popupImage.src = e.target.src;
-  popupCaption.textContent = e.target.alt;
+const imagePopupPicture = imagePopup.querySelector(".popup__image"); // элемент img попапа
+const imagePopupCaption = imagePopup.querySelector(".popup__caption"); // элемент подписи попапа
 
-  openModal(imagePopup);
-
-  buttonClosePopupImg.addEventListener("click", handlerClickClose);
-};
-
-
-
-// Добавление 6 карточек на страницу при загрузке сайта
-initialCards.forEach((element) =>
-  cardsSection.append(
-    createCard(element, deleteCard, likeToggle, handlerPopupImage)
-  )
-);
-
-// Попап редактирования профиля
-
+// Элементы попапа редактирования профиля
 const popupEdit = document.querySelector(".popup_type_edit");
 const btnEditProfile = document.querySelector(".profile__edit-button");
 const formElementEdit = popupEdit.querySelector(".popup__form");
@@ -44,27 +29,41 @@ const jobInput = formElementEdit.querySelector(
   ".popup__input_type_description"
 );
 
-// Обработчик открытия "редактирования профиля"
+// Элементы попапа добавления новой карточки
+const newCardPopupAdd = document.querySelector(".popup_type_new-card"); //попап новой карточки
+const newCardAddButton = document.querySelector(".profile__add-button"); //кнопка добавления нов.кар.
+const formNewPlace = newCardPopupAdd.querySelector(".popup__form"); //Форма с инпутами
+const cardNameInput = formNewPlace.querySelector(".popup__input_type_card-name"); //Инпут title
+const cardUrlInput = formNewPlace.querySelector(".popup__input_type_url"); //Инпут URL
 
-const handlerEditProfile = () => {
-  nameInput.value = document.querySelector(".profile__title").textContent;
-  jobInput.value = document.querySelector(".profile__description").textContent;
+  //Функции
+// Обработчик открытия попапа нажатием на картинку
+const handlerPopupImage = (element) => {
+  imagePopupPicture.src = element.link; // передаем значение ключа link в ссылку картинки попапа
+  imagePopupPicture.alt = element.name;
+  imagePopupCaption.textContent = element.name; //передаем значение ключа name в caption картинки попапа
+
+  openModal(imagePopup);
+};
+
+// Добавление 6 карточек на страницу при загрузке сайта
+initialCards.forEach((element) =>
+  cardsSection.append(
+    createCard(element, deleteCard, likeToggle, handlerPopupImage)
+  )
+);
+
+// Обработчик открытия "редактирования профиля"
+const PopupEditOpenHandler = () => {
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileDescription.textContent;
 
   openModal(popupEdit);
 };
-// Открытие попапа профиля
-btnEditProfile.addEventListener("click", handlerEditProfile);
-
-// Закрытие попапа профиля
-popupEdit.addEventListener("click", handlerClickClose);
 
 // Обработчик сохранения изменения информации профиля
-
-const handleFormSubmit = (evt) => {
+const PopupEditSubmitHandler = (evt) => {
   evt.preventDefault();
-
-  const profileName = document.querySelector(".profile__title");
-  const profileDescription = document.querySelector(".profile__description");
 
   profileName.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
@@ -72,28 +71,7 @@ const handleFormSubmit = (evt) => {
   closeModal(popupEdit);
 };
 
-// Отправка формы
-formElementEdit.addEventListener("submit", handleFormSubmit);
-
-// Обработчики открытия и закрытия попапа newCard
-const newCardPopupAdd = document.querySelector(".popup_type_new-card"); //попап новой карточки
-const profileAddButton = document.querySelector(".profile__add-button"); //кнопка добавления нов.кар.
-
-profileAddButton.addEventListener("click", () => {
-  openModal(newCardPopupAdd);
-});
-
-newCardPopupAdd.addEventListener("click", handlerClickClose);
-
-//Создание новой карточки(через попап)
-
-const formNewPlace = newCardPopupAdd.querySelector(".popup__form");
-const cardNameInput = formNewPlace.querySelector(
-  ".popup__input_type_card-name"
-); //Инпут title
-const cardUrlInput = formNewPlace.querySelector(".popup__input_type_url"); //Инпут URL
-
-// Создание новой карточки
+//Функция создания новой карточки(через попап)
 const generateCard = () => {
   const cardObj = {};
   cardObj.name = cardNameInput.value;
@@ -107,6 +85,7 @@ const generateCard = () => {
   );
   cardsSection.prepend(newCard);
 };
+
 // Обработчик добавления новой карточки
 const addNewCard = (e) => {
   e.preventDefault();
@@ -115,5 +94,23 @@ const addNewCard = (e) => {
   formNewPlace.reset();
 };
 
-//Сабмит добавления карточки
+
+  //Добавление обработчиков
+// Слушатель открытия попапа редактирования  профиля
+btnEditProfile.addEventListener("click", PopupEditOpenHandler);
+
+// Слушатель открытия попапа добавления карточки
+newCardAddButton.addEventListener("click", () => {
+  openModal(newCardPopupAdd);
+});
+
+
+//Слушатель закрытия попапов
+allPopups.forEach((popup) =>
+popup.addEventListener("click", handlerClickClose));
+
+// Закрытие и отправка формы редактирования профиля
+formElementEdit.addEventListener("submit", PopupEditSubmitHandler);
+
+//Закрытие и отправка формы создания новой карточки
 formNewPlace.addEventListener("submit", addNewCard);
