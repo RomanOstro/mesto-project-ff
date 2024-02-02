@@ -54,7 +54,7 @@ initialCards.forEach((element) =>
 );
 
 // Обработчик открытия "редактирования профиля"
-const PopupEditOpenHandler = () => {
+const popupEditOpenHandler = () => {
   nameInput.value = profileName.textContent;
   jobInput.value = profileDescription.textContent;
 
@@ -62,7 +62,7 @@ const PopupEditOpenHandler = () => {
 };
 
 // Обработчик сохранения изменения информации профиля
-const PopupEditSubmitHandler = (evt) => {
+const popupEditSubmitHandler = (evt) => {
   evt.preventDefault();
 
   profileName.textContent = nameInput.value;
@@ -97,7 +97,7 @@ const addNewCard = (e) => {
 
   //Добавление обработчиков
 // Слушатель открытия попапа редактирования  профиля
-btnEditProfile.addEventListener("click", PopupEditOpenHandler);
+btnEditProfile.addEventListener("click", popupEditOpenHandler);
 
 // Слушатель открытия попапа добавления карточки
 newCardAddButton.addEventListener("click", () => {
@@ -110,7 +110,7 @@ allPopups.forEach((popup) =>
 popup.addEventListener("click", handlerClickClose));
 
 // Закрытие и отправка формы редактирования профиля
-formElementEdit.addEventListener("submit", PopupEditSubmitHandler);
+formElementEdit.addEventListener("submit", popupEditSubmitHandler);
 
 //Закрытие и отправка формы создания новой карточки
 formNewPlace.addEventListener("submit", addNewCard);
