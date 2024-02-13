@@ -21,7 +21,7 @@ const closeModal = (popup) => {
   document.removeEventListener("keydown", keyPressEsc);
 };
 
-// Обработчик клика по оверлею и крестику
+// Обработчик клика закрытия попапа по оверлею и крестику
 const handlerClickClose = (e) => {
   if (
     e.target === e.currentTarget ||

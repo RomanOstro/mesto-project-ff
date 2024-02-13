@@ -19,9 +19,18 @@
   cursor: pointer;
 }
 
+.popup__button_disabled {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #ccc;
+  pointer-events: none;
+}
+
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;
     line-height: 17px;
   }
 }
+/* rgba(0, 0, 0, 0.15) 
+##С5С5С5- цвет не активной кнопки */

@@ -1,7 +1,11 @@
 import "../index.css";
 import {initialCards} from "./cards.js";
 import { openModal, handlerClickClose, closeModal } from "./modal.js";
-import {createCard, deleteCard, likeToggle} from "./card.js"
+import {createCard, deleteCard, likeToggle} from "./card.js";
+import {enableValidation, clearValidation} from "./validation.js";
+
+
+
 
 
   // Объявление переменных
@@ -94,14 +98,31 @@ const addNewCard = (e) => {
   formNewPlace.reset();
 };
 
+//  Конфигурация функции валидации форм
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
+//  Включение валидации форм
+  enableValidation(validationConfig);
+
 
   //Добавление обработчиков
 // Слушатель открытия попапа редактирования  профиля
-btnEditProfile.addEventListener("click", popupEditOpenHandler);
+btnEditProfile.addEventListener("click",()=> {
+  popupEditOpenHandler();
+  clearValidation(popupEdit, validationConfig)
+});
 
 // Слушатель открытия попапа добавления карточки
 newCardAddButton.addEventListener("click", () => {
   openModal(newCardPopupAdd);
+  clearValidation(newCardPopupAdd, validationConfig)
 });
 
 
