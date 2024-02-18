@@ -3,12 +3,23 @@ import {initialCards} from "./cards.js";
 import { openModal, handlerClickClose, closeModal } from "./modal.js";
 import {createCard, deleteCard, likeToggle} from "./card.js";
 import {enableValidation, clearValidation} from "./validation.js";
-
-
+import {getInitialCards,
+   profileDataRequest,
+   profileEditSendingData,
+   newCardSendingData} from './api.js';
+export{userId}
 
 
 
   // Объявление переменных
+
+// Элементы профиля
+const avatar = document.querySelector('.profile__image');
+const userName = document.querySelector('.profile__title');
+const userDescription = document.querySelector('.profile__description');
+let userId;
+
+
 // Секция с карточками
 const cardsSection = document.querySelector(".places__list");
 
@@ -50,12 +61,7 @@ const handlerPopupImage = (element) => {
   openModal(imagePopup);
 };
 
-// Добавление 6 карточек на страницу при загрузке сайта
-initialCards.forEach((element) =>
-  cardsSection.append(
-    createCard(element, deleteCard, likeToggle, handlerPopupImage)
-  )
-);
+
 
 // Обработчик открытия "редактирования профиля"
 const popupEditOpenHandler = () => {
@@ -65,29 +71,47 @@ const popupEditOpenHandler = () => {
   openModal(popupEdit);
 };
 
+
+
 // Обработчик сохранения изменения информации профиля
 const popupEditSubmitHandler = (evt) => {
   evt.preventDefault();
 
-  profileName.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
+  const profileEditValue = {
+    name: nameInput.value,
+    about: jobInput.value
+  }
+   profileEditSendingData(profileEditValue) // Получаем обновленные данные профиля
+    .then(data => {
+      profileName.textContent = data.name;
+      profileDescription.textContent = data.about;
+  })
+    .catch(err => console.log(err))
 
   closeModal(popupEdit);
 };
 
+
 //Функция создания новой карточки(через попап)
 const generateCard = () => {
-  const cardObj = {};
-  cardObj.name = cardNameInput.value;
-  cardObj.alt = cardObj.name;
-  cardObj.link = cardUrlInput.value;
-  const newCard = createCard(
-    cardObj,
-    deleteCard,
-    likeToggle,
-    handlerPopupImage
-  );
-  cardsSection.prepend(newCard);
+  const newCardInputValue = {
+  name: cardNameInput.value,
+  link: cardUrlInput.value,
+  _id: userId
+};
+    
+newCardSendingData(newCardInputValue) // Добавление новой карточки на сервер
+  .then(cardData =>{
+    const newCard = createCard(
+      cardData,
+      deleteCard,
+      likeToggle,
+      handlerPopupImage
+    );
+    cardsSection.prepend(newCard);
+  })
+  .catch(err => console.log(err))
+  
 };
 
 // Обработчик добавления новой карточки
@@ -107,9 +131,9 @@ const validationConfig = {
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible'
 }
-
 //  Включение валидации форм
   enableValidation(validationConfig);
+
 
 
   //Добавление обработчиков
@@ -130,8 +154,45 @@ newCardAddButton.addEventListener("click", () => {
 allPopups.forEach((popup) =>
 popup.addEventListener("click", handlerClickClose));
 
+
 // Закрытие и отправка формы редактирования профиля
-formElementEdit.addEventListener("submit", popupEditSubmitHandler);
+formElementEdit.addEventListener("submit",popupEditSubmitHandler);
 
 //Закрытие и отправка формы создания новой карточки
 formNewPlace.addEventListener("submit", addNewCard);
+
+
+//  Получаем данные профиля и выгружаем карточки на страницу
+Promise.all([profileDataRequest(),getInitialCards()])
+.then(([profile, cards]) => {
+  avatar.style.backgroundImage = `url(${profile.avatar})`;
+  userName.textContent = profile.name;
+  userDescription.textContent = profile.about;
+  userId = profile._id;
+    
+    cards.forEach((card) => {
+      cardsSection.append(createCard(card, deleteCard, likeToggle, handlerPopupImage))
+    }) 
+})
+.catch((rej)=> console.log(rej))
+
+
+
+
+
+
+
+
+
+const cardDelitionRequest = (id) => {
+  return fetch(`https://nomoreparties.co/v1/wff-cohort-6/cards/${id}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: 'c377f8d1-a82e-4f48-addc-6c4fa6cfe2b4',
+      'Content-Type': 'application/json'
+      },
+  })
+  .then(res => res.json())
+  .then(res => console.log(res))
+  .catch(err => console.log(err))
+}

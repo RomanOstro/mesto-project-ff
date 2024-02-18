@@ -41,7 +41,7 @@
         <form novalidate class="popup__form" name="edit-profile">
           <input type="text" id="name-input" name="name" class="popup__input popup__input_type_name" placeholder="Имя" minlength="2"
             maxlength="40" required 
-            pattern="^[а-яёА-ЯЁa-zA-Z\-\s]+$"
+            pattern="^[а-яёА-ЯЁa-zA-Z\-\s]+$"    
             data-error-massage="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
             <!-- спан с ошибкой -->
             <span class="popup__error name-input-error"></span>
@@ -85,13 +85,16 @@
 
 
   <template id="card-template">
-    <li class="places__item card">
+    <li class="places__item card" id ="">
       <img class="card__image" src="" alt="" />
       <button type="button" class="card__delete-button"></button>
       <div class="card__description">
         <h2 class="card__title">
         </h2>
-        <button type="button" class="card__like-button"></button>
+    <div class="card__like-button_section">
+      <button type="button" class="card__like-button"></button>
+      <span class="like_counter">6</span>
+    </div>
       </div>
     </li>
   </template>
