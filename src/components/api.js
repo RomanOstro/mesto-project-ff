@@ -4,7 +4,9 @@ export {
      profileDataRequest,
      profileEditSendingData,
      newCardSendingData,
-     cardDelitionRequest
+     cardDelitionRequest,
+     makeLikeRequest,
+     deleteLikeRequest
     }
 
 const configApi = {
@@ -92,4 +94,34 @@ const cardDelitionRequest = (id) => {
   });
 };
 
+
+//  Запрос для добавление лайка
+const makeLikeRequest = (id) => {
+ return fetch(`${configApi.baseUrl}/cards/likes/${id}`, {
+  method: 'PUT',
+  headers: configApi.headers
+ })
+ .then((res) => {
+  if (res.ok) {
+    return res.json()
+  }
+  
+  return Promise.reject(`Ошибка${res.status}`);
+});
+}
+
+//  Запрос удаления карточки
+const deleteLikeRequest = (id) => {
+  return fetch(`${configApi.baseUrl}/cards/likes/${id}`, {
+    method: 'DELETE',
+    headers: configApi.headers
+  })
+  .then((res) => {
+  if (res.ok) {
+    return res.json()
+  }
+  
+  return Promise.reject(`Ошибка${res.status}`);
+});
+}
 

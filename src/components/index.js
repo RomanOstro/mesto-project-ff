@@ -1,12 +1,13 @@
 import "../index.css";
 import {initialCards} from "./cards.js";
 import { openModal, handlerClickClose, closeModal } from "./modal.js";
-import {createCard, deleteCard, likeToggle} from "./card.js";
+import {createCard, deleteCard, likeToggle, isLiked,updateCardLikes} from "./card.js";
 import {enableValidation, clearValidation} from "./validation.js";
 import {getInitialCards,
    profileDataRequest,
    profileEditSendingData,
-   newCardSendingData} from './api.js';
+   newCardSendingData
+   } from './api.js';
 export{userId}
 
 
@@ -106,7 +107,9 @@ newCardSendingData(newCardInputValue) // Добавление новой кар�
       cardData,
       deleteCard,
       likeToggle,
-      handlerPopupImage
+      handlerPopupImage,
+      isLiked,
+      updateCardLikes
     );
     cardsSection.prepend(newCard);
   })
@@ -171,28 +174,10 @@ Promise.all([profileDataRequest(),getInitialCards()])
   userId = profile._id;
     
     cards.forEach((card) => {
-      cardsSection.append(createCard(card, deleteCard, likeToggle, handlerPopupImage))
+      cardsSection.append(createCard(card, deleteCard, likeToggle, handlerPopupImage, isLiked, updateCardLikes))
     }) 
 })
 .catch((rej)=> console.log(rej))
 
 
 
-
-
-
-
-
-
-const cardDelitionRequest = (id) => {
-  return fetch(`https://nomoreparties.co/v1/wff-cohort-6/cards/${id}`, {
-    method: 'DELETE',
-    headers: {
-      authorization: 'c377f8d1-a82e-4f48-addc-6c4fa6cfe2b4',
-      'Content-Type': 'application/json'
-      },
-  })
-  .then(res => res.json())
-  .then(res => console.log(res))
-  .catch(err => console.log(err))
-}

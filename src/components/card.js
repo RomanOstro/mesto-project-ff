@@ -1,9 +1,12 @@
-export{createCard, deleteCard, likeToggle}
+export{createCard, deleteCard, likeToggle, isLiked,updateCardLikes}
 import {userId} from './index'
-import{cardDelitionRequest} from './api'
+import{
+  cardDelitionRequest,
+  makeLikeRequest,
+  deleteLikeRequest} from './api'
 
   // Создание карточек из объекта initialCards
-  function createCard(element, deleteCard, handlerLike, handlerPopupImage) {
+  function createCard(element, deleteCard, likeToggle, handlerPopupImage, isLiked, updateCardLikes) {
 
     const template = document.querySelector('#card-template').content // Доступ к фрагменту шаблона(обертка элементов шаблона)
     const card = template.querySelector('.places__item') // доступ к элементу карточки
@@ -24,7 +27,7 @@ import{cardDelitionRequest} from './api'
 
     // Слушатель лайка
     const likeButton = cardElement.querySelector(".card__like-button");
-    likeButton.addEventListener("click", handlerLike);
+    likeButton.addEventListener("click", ()=> likeToggle(likeButton, element, cardLikeCounter, updateCardLikes));
 
     // Удаление карточки
     const deleteButton = cardElement.querySelector(".card__delete-button");
@@ -34,15 +37,43 @@ import{cardDelitionRequest} from './api'
       deleteButton.classList.add('popup_is-animated')
     } 
 
+    if(isLiked(element)) {
+      likeButton.classList.add("card__like-button_is-active")
+    } else {
+      likeButton.classList.remove("card__like-button_is-active")
+    }
+
     return cardElement;
   }
   
  // Обработчик лайка
- const likeToggle = (e) => {
-  if (e.target.classList.contains("card__like-button")) {
-    e.target.classList.toggle("card__like-button_is-active");
+ const likeToggle = (likeButton, element, likeCounter, updateCardLikes) => {
+  
+  if (!likeButton.classList.contains("card__like-button_is-active")) {
+    likeButton.classList.add("card__like-button_is-active")
+    makeLikeRequest(element._id)
+    .then(card => {
+      likeCounter.textContent = card.likes.length
+    })
+  } else {
+    likeButton.classList.remove("card__like-button_is-active")
+    deleteLikeRequest(element._id)
+    .then(card => {
+      likeCounter.textContent = card.likes.length
+    })
   }
+  updateCardLikes(likeCounter, element);
 };
+
+// Проверка статуса лайка
+const isLiked = (element) => {
+  return element.likes.some(like => like._id === userId)
+ }
+
+// Обновление кол-ва лайков через Get при генерации карточки
+const updateCardLikes = (likeCounter, element) => {
+  likeCounter.textContent = element.likes.length;
+}
 
 //  Обработчик удаления карточки
 const deleteCard = (card, idCard, cardData) => {
@@ -53,6 +84,3 @@ const deleteCard = (card, idCard, cardData) => {
   card.remove();
 }
 
-  
- 
- 
