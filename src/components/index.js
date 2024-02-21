@@ -107,17 +107,17 @@ const popupAvatarSubmitHandler = (evt) => {
   evt.preventDefault();
 
   const avatarInputValue = {
-    avatar: popupAvatarInput.value
-  }
-// Передаем ссылку из запроса в элемент dom
-renderLoading(true, popupAvatarSaveButton);
+    avatar: popupAvatarInput.value,
+  };
+  // Передаем ссылку из запроса в элемент dom аватара
+  renderLoading(true, popupAvatarSaveButton);
   avatarUpdateRequest(avatarInputValue)
-  .then((profileData) => {
-    avatar.style.backgroundImage = `url(${profileData.avatar})`
-  })
-  .catch((err) => console.log(err))
-  .finally(()=> renderLoading(false, popupAvatarSaveButton));
-closeModal(popupAvatar);
+    .then((profileData) => {
+      avatar.style.backgroundImage = `url(${profileData.avatar})`;
+      closeModal(popupAvatar);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => renderLoading(false, popupAvatarSaveButton));
 }
 
 // Обработчик сохранения изменения информации профиля

@@ -23,12 +23,17 @@ const closeModal = (popup) => {
 
 // Обработчик клика закрытия попапа по оверлею и крестику
 const handlerClickClose = (e) => {
+  const popupForm = e.currentTarget.querySelector('.popup__form');
+
   if (
     e.target === e.currentTarget ||
     e.target.classList.contains("popup__close")
     ){
-   
       closeModal(e.currentTarget);
+      setTimeout(()=> {
+        popupForm.reset()
+      }, 400)  
   }
 };
+
 

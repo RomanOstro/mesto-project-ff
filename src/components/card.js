@@ -52,16 +52,21 @@ import{
  const likeToggle = (likeButton, element, likeCounter) => {
   
   if (!likeButton.classList.contains("card__like-button_is-active")) {
+    
     makeLikeRequest(element._id)
     .then(card => {
       likeCounter.textContent = card.likes.length;
       likeButton.classList.add("card__like-button_is-active");
-    })} else {
+    })
+    .catch((err) => console.log(err))
+  } else {
+
     deleteLikeRequest(element._id)
     .then(card => {
       likeCounter.textContent = card.likes.length;
       likeButton.classList.remove("card__like-button_is-active");
     })
+    .catch((err) => console.log(err))
     
   }
 };
