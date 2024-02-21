@@ -1,12 +1,12 @@
 import "../index.css";
-import {initialCards} from "./cards.js";
 import { openModal, handlerClickClose, closeModal } from "./modal.js";
-import {createCard, deleteCard, likeToggle, isLiked,updateCardLikes} from "./card.js";
+import {createCard, deleteCard, likeToggle, isLiked} from "./card.js";
 import {enableValidation, clearValidation} from "./validation.js";
 import {getInitialCards,
    profileDataRequest,
    profileEditSendingData,
-   newCardSendingData
+   newCardSendingData,
+   avatarUpdateRequest
    } from './api.js';
 export{userId}
 
@@ -19,7 +19,6 @@ const avatar = document.querySelector('.profile__image');
 const userName = document.querySelector('.profile__title');
 const userDescription = document.querySelector('.profile__description');
 let userId;
-
 
 // Секция с карточками
 const cardsSection = document.querySelector(".places__list");
@@ -44,6 +43,14 @@ const nameInput = formElementEdit.querySelector(".popup__input_type_name");
 const jobInput = formElementEdit.querySelector(
   ".popup__input_type_description"
 );
+const popupEditSaveButton = popupEdit.querySelector('.popup__button');
+
+//Элементы попапа редактирования аватарки
+const popupAvatar = document.querySelector('.popup_type_edit_avatar');
+const popupAvatarForm = popupAvatar.querySelector('.popup__form')
+const popupAvatarInput = popupAvatarForm.querySelector('.popup__input_type_url');
+const popupAvatarSaveButton = popupAvatar.querySelector('.popup__button');
+
 
 // Элементы попапа добавления новой карточки
 const newCardPopupAdd = document.querySelector(".popup_type_new-card"); //попап новой карточки
@@ -51,8 +58,33 @@ const newCardAddButton = document.querySelector(".profile__add-button"); //кн�
 const formNewPlace = newCardPopupAdd.querySelector(".popup__form"); //Форма с инпутами
 const cardNameInput = formNewPlace.querySelector(".popup__input_type_card-name"); //Инпут title
 const cardUrlInput = formNewPlace.querySelector(".popup__input_type_url"); //Инпут URL
+const newCardPopupSavaButton = newCardPopupAdd.querySelector('.popup__button');
 
   //Функции
+
+//  Получаем данные профиля и выгружаем карточки на страницу
+Promise.all([profileDataRequest(),getInitialCards()])
+.then(([profile, cards]) => {
+  avatar.style.backgroundImage = `url(${profile.avatar})`;
+  userName.textContent = profile.name;
+  userDescription.textContent = profile.about;
+  userId = profile._id;
+    
+    cards.forEach((card) => {
+      cardsSection.append(createCard(card, deleteCard, likeToggle, handlerPopupImage, isLiked))
+    }) 
+})
+.catch((rej)=> console.log(rej))
+
+// Функция лоадера "Сохранить..."
+const renderLoading = (isLoading, button) => {
+  if(isLoading){
+    button.textContent = `Сохранение...`
+  } else {
+    button.textContent = `Сохранить`
+  }
+};
+
 // Обработчик открытия попапа нажатием на картинку
 const handlerPopupImage = (element) => {
   imagePopupPicture.src = element.link; // передаем значение ключа link в ссылку картинки попапа
@@ -63,7 +95,6 @@ const handlerPopupImage = (element) => {
 };
 
 
-
 // Обработчик открытия "редактирования профиля"
 const popupEditOpenHandler = () => {
   nameInput.value = profileName.textContent;
@@ -71,8 +102,23 @@ const popupEditOpenHandler = () => {
 
   openModal(popupEdit);
 };
+// Обработчик сохранения изменений и закрытия попапа аватара
+const popupAvatarSubmitHandler = (evt) => {
+  evt.preventDefault();
 
-
+  const avatarInputValue = {
+    avatar: popupAvatarInput.value
+  }
+// Передаем ссылку из запроса в элемент dom
+renderLoading(true, popupAvatarSaveButton);
+  avatarUpdateRequest(avatarInputValue)
+  .then((profileData) => {
+    avatar.style.backgroundImage = `url(${profileData.avatar})`
+  })
+  .catch((err) => console.log(err))
+  .finally(()=> renderLoading(false, popupAvatarSaveButton));
+closeModal(popupAvatar);
+}
 
 // Обработчик сохранения изменения информации профиля
 const popupEditSubmitHandler = (evt) => {
@@ -82,25 +128,26 @@ const popupEditSubmitHandler = (evt) => {
     name: nameInput.value,
     about: jobInput.value
   }
+  renderLoading(true, popupEditSaveButton )
    profileEditSendingData(profileEditValue) // Получаем обновленные данные профиля
     .then(data => {
       profileName.textContent = data.name;
       profileDescription.textContent = data.about;
   })
     .catch(err => console.log(err))
+    .finally(() => renderLoading(false, popupEditSaveButton ))
 
   closeModal(popupEdit);
 };
 
-
-//Функция создания новой карточки(через попап)
+//Функция создания новой карточки(через попап)(c лоадером)
 const generateCard = () => {
   const newCardInputValue = {
   name: cardNameInput.value,
   link: cardUrlInput.value,
   _id: userId
 };
-    
+renderLoading(true, newCardPopupSavaButton);
 newCardSendingData(newCardInputValue) // Добавление новой карточки на сервер
   .then(cardData =>{
     const newCard = createCard(
@@ -108,13 +155,12 @@ newCardSendingData(newCardInputValue) // Добавление новой кар�
       deleteCard,
       likeToggle,
       handlerPopupImage,
-      isLiked,
-      updateCardLikes
+      isLiked
     );
     cardsSection.prepend(newCard);
   })
   .catch(err => console.log(err))
-  
+  .finally(()=> renderLoading(false, newCardPopupSavaButton))
 };
 
 // Обработчик добавления новой карточки
@@ -138,7 +184,6 @@ const validationConfig = {
   enableValidation(validationConfig);
 
 
-
   //Добавление обработчиков
 // Слушатель открытия попапа редактирования  профиля
 btnEditProfile.addEventListener("click",()=> {
@@ -152,6 +197,12 @@ newCardAddButton.addEventListener("click", () => {
   clearValidation(newCardPopupAdd, validationConfig)
 });
 
+// Открытие попапа редактирования аватара
+avatar.addEventListener('click',()=> {
+  openModal(popupAvatar)
+  clearValidation(popupAvatar, validationConfig)
+})
+
 
 //Слушатель закрытия попапов
 allPopups.forEach((popup) =>
@@ -164,20 +215,10 @@ formElementEdit.addEventListener("submit",popupEditSubmitHandler);
 //Закрытие и отправка формы создания новой карточки
 formNewPlace.addEventListener("submit", addNewCard);
 
+// Закрытие и отправка формы попапа аватара
+popupAvatarForm.addEventListener('submit', popupAvatarSubmitHandler);
 
-//  Получаем данные профиля и выгружаем карточки на страницу
-Promise.all([profileDataRequest(),getInitialCards()])
-.then(([profile, cards]) => {
-  avatar.style.backgroundImage = `url(${profile.avatar})`;
-  userName.textContent = profile.name;
-  userDescription.textContent = profile.about;
-  userId = profile._id;
-    
-    cards.forEach((card) => {
-      cardsSection.append(createCard(card, deleteCard, likeToggle, handlerPopupImage, isLiked, updateCardLikes))
-    }) 
-})
-.catch((rej)=> console.log(rej))
+
 
 
 

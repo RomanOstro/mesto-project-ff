@@ -1,0 +1,12 @@
+.profile__image-edit-icon {
+  position: absolute;
+  inline-size: 26px;
+  block-size: 26px;
+  right: 50%;
+  top: 50%;
+  translate: 50% -50%;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s;
+}
+

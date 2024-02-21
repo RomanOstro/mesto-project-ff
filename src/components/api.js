@@ -6,7 +6,8 @@ export {
      newCardSendingData,
      cardDelitionRequest,
      makeLikeRequest,
-     deleteLikeRequest
+     deleteLikeRequest,
+     avatarUpdateRequest
     }
 
 const configApi = {
@@ -16,18 +17,20 @@ const configApi = {
     'Content-Type': 'application/json'
   }
 }
+//  Проверка статуса ответа с сервера
+const checkResolve = (res) => {
+    if(res.ok){
+      return res.json();
+    }
+    return Promise.reject(`Ошибка${res.status}`)
+}
 
 // Запрос карточек с сервера
 const getInitialCards = () =>{
  return fetch(`${configApi.baseUrl}/cards`, {
     headers: configApi.headers
-  })
-  .then(res => {
-    if(res.ok){
-      return res.json();
-    }
-    return Promise.reject(`Ошибка${res.status}`)
-  })
+  }).then(res => checkResolve(res))
+  
 }
 
 //Запрос информации о пользователе c сервера
@@ -35,12 +38,7 @@ const profileDataRequest =() => {
   return fetch(`${configApi.baseUrl}/users/me`, {
     headers: configApi.headers
   })
-  .then(res => {
-    if(res.ok){
-      return res.json();
-    }
-    return Promise.reject(`Ошибка${res.status}`)
-  })
+  .then(res => checkResolve(res))
 }
 
 // Отправляем на сервер данные профиля(patch)
@@ -53,12 +51,7 @@ const profileEditSendingData = (profileInputValue) => {
       about: profileInputValue.about,
     }),
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка${res.status}`);
-  });
+  .then(res => checkResolve(res))
 };
 
 // Добавление новой карточки на сервер 
@@ -86,14 +79,8 @@ const cardDelitionRequest = (id) => {
     method: 'DELETE',
     headers: configApi.headers,
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка${res.status}`);
-  });
+  .then(res => checkResolve(res))
 };
-
 
 //  Запрос для добавление лайка
 const makeLikeRequest = (id) => {
@@ -101,13 +88,7 @@ const makeLikeRequest = (id) => {
   method: 'PUT',
   headers: configApi.headers
  })
- .then((res) => {
-  if (res.ok) {
-    return res.json()
-  }
-  
-  return Promise.reject(`Ошибка${res.status}`);
-});
+ .then(res => checkResolve(res))
 }
 
 //  Запрос удаления карточки
@@ -116,12 +97,17 @@ const deleteLikeRequest = (id) => {
     method: 'DELETE',
     headers: configApi.headers
   })
-  .then((res) => {
-  if (res.ok) {
-    return res.json()
-  }
-  
-  return Promise.reject(`Ошибка${res.status}`);
-});
+  .then(res => checkResolve(res))
 }
 
+// Запрос обновления аватара
+const avatarUpdateRequest = (profileInputValue) => {
+ return fetch(`${configApi.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: configApi.headers,
+    body: JSON.stringify({
+      avatar: profileInputValue.avatar
+    })
+  })
+  .then(res => checkResolve(res))
+}
