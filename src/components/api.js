@@ -1,48 +1,45 @@
-
 export {
-     getInitialCards,
-     profileDataRequest,
-     profileEditSendingData,
-     newCardSendingData,
-     cardDelitionRequest,
-     makeLikeRequest,
-     deleteLikeRequest,
-     avatarUpdateRequest
-    }
+  getInitialCards,
+  getUserInfo,
+  updateUserInfo,
+  createCard,
+  deleteCard,
+  addLike,
+  removeLike,
+  updateAvatar,
+};
 
 const configApi = {
-  baseUrl:'https://nomoreparties.co/v1/wff-cohort-6',
-  headers:{
-    authorization: 'c377f8d1-a82e-4f48-addc-6c4fa6cfe2b4',
-    'Content-Type': 'application/json'
-  }
-}
+  baseUrl: "https://nomoreparties.co/v1/wff-cohort-6",
+  headers: {
+    authorization: "c377f8d1-a82e-4f48-addc-6c4fa6cfe2b4",
+    "Content-Type": "application/json",
+  },
+};
 //  Проверка статуса ответа с сервера
 const checkResolve = (res) => {
-    if(res.ok){
-      return res.json();
-    }
-    return Promise.reject(`Ошибка${res.status}`)
-}
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка${res.status}`);
+};
 
 // Запрос карточек с сервера
-const getInitialCards = () =>{
- return fetch(`${configApi.baseUrl}/cards`, {
-    headers: configApi.headers
-  }).then(res => checkResolve(res))
-  
-}
+const getInitialCards = () => {
+  return fetch(`${configApi.baseUrl}/cards`, {
+    headers: configApi.headers,
+  }).then((res) => checkResolve(res));
+};
 
 //Запрос информации о пользователе c сервера
-const profileDataRequest =() => {
+const getUserInfo = () => {
   return fetch(`${configApi.baseUrl}/users/me`, {
-    headers: configApi.headers
-  })
-  .then(res => checkResolve(res))
-}
+    headers: configApi.headers,
+  }).then((res) => checkResolve(res));
+};
 
 // Отправляем на сервер данные профиля(patch)
-const profileEditSendingData = (profileInputValue) => {
+const updateUserInfo = (profileInputValue) => {
   return fetch(`${configApi.baseUrl}/users/me`, {
     method: "PATCH",
     headers: configApi.headers,
@@ -50,64 +47,57 @@ const profileEditSendingData = (profileInputValue) => {
       name: profileInputValue.name,
       about: profileInputValue.about,
     }),
-  })
-  .then(res => checkResolve(res))
+  }).then((res) => checkResolve(res));
 };
 
-// Добавление новой карточки на сервер 
-const newCardSendingData = (newCardInputData) => {
+// Добавление новой карточки на сервер
+const createCard = (newCardInputData) => {
   return fetch(`${configApi.baseUrl}/cards`, {
-    method: 'POST',
+    method: "POST",
     headers: configApi.headers,
-      body: JSON.stringify({
-        name: newCardInputData.name,
-        link: newCardInputData.link
-      })
-  })
-  .then((res) => {
+    body: JSON.stringify({
+      name: newCardInputData.name,
+      link: newCardInputData.link,
+    }),
+  }).then((res) => {
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(`Ошибка${res.status}`);
   });
-
-}
+};
 
 // Запрос на удаление карточки
-const cardDelitionRequest = (id) => {
+const deleteCard = (id) => {
   return fetch(`${configApi.baseUrl}/cards/${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: configApi.headers,
-  })
-  .then(res => checkResolve(res))
+  }).then((res) => checkResolve(res));
 };
 
 //  Запрос для добавление лайка
-const makeLikeRequest = (id) => {
- return fetch(`${configApi.baseUrl}/cards/likes/${id}`, {
-  method: 'PUT',
-  headers: configApi.headers
- })
- .then(res => checkResolve(res))
-}
+const addLike = (id) => {
+  return fetch(`${configApi.baseUrl}/cards/likes/${id}`, {
+    method: "PUT",
+    headers: configApi.headers,
+  }).then((res) => checkResolve(res));
+};
 
 //  Запрос удаления карточки
-const deleteLikeRequest = (id) => {
+const removeLike = (id) => {
   return fetch(`${configApi.baseUrl}/cards/likes/${id}`, {
-    method: 'DELETE',
-    headers: configApi.headers
-  })
-  .then(res => checkResolve(res))
-}
+    method: "DELETE",
+    headers: configApi.headers,
+  }).then((res) => checkResolve(res));
+};
 
 // Запрос обновления аватара
-const avatarUpdateRequest = (profileInputValue) => {
- return fetch(`${configApi.baseUrl}/users/me/avatar`, {
-    method: 'PATCH',
+const updateAvatar = (profileInputValue) => {
+  return fetch(`${configApi.baseUrl}/users/me/avatar`, {
+    method: "PATCH",
     headers: configApi.headers,
     body: JSON.stringify({
-      avatar: profileInputValue.avatar
-    })
-  })
-  .then(res => checkResolve(res))
-}
+      avatar: profileInputValue.avatar,
+    }),
+  }).then((res) => checkResolve(res));
+};
